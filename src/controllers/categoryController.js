@@ -7,7 +7,6 @@ const {
 } = require("../utils/responseHandler");
 const { Op } = require("sequelize");
 
-// GET ALL CATEGORIES
 exports.getAllCategories = asyncHandler(async (req, res) => {
   const { page, size, is_active, search } = req.query;
 
@@ -15,7 +14,6 @@ exports.getAllCategories = asyncHandler(async (req, res) => {
   if (is_active !== undefined) where.is_active = is_active;
   if (search) where.name = { [Op.iLike]: `%${search}%` };
 
-  // Pagination
   if (page && size) {
     const limit = parseInt(size);
     const offset = (parseInt(page) - 1) * limit;
@@ -48,7 +46,6 @@ exports.getAllCategories = asyncHandler(async (req, res) => {
   return successResponse(res, 200, "Categories retrieved", categories);
 });
 
-// GET CATEGORY BY ID
 exports.getCategoryById = asyncHandler(async (req, res) => {
   const category = await Category.findByPk(req.params.id, {
     include: [{ model: Product, as: "products" }],
@@ -59,13 +56,11 @@ exports.getCategoryById = asyncHandler(async (req, res) => {
   return successResponse(res, 200, "Category retrieved", category);
 });
 
-// CREATE CATEGORY
 exports.createCategory = asyncHandler(async (req, res) => {
   const category = await Category.create(req.body);
   return successResponse(res, 201, "Category created", category);
 });
 
-// UPDATE CATEGORY
 exports.updateCategory = asyncHandler(async (req, res) => {
   const category = await Category.findByPk(req.params.id);
   if (!category) return errorResponse(res, 404, "Category not found");
@@ -74,7 +69,6 @@ exports.updateCategory = asyncHandler(async (req, res) => {
   return successResponse(res, 200, "Category updated", category);
 });
 
-// DELETE CATEGORY
 exports.deleteCategory = asyncHandler(async (req, res) => {
   const category = await Category.findByPk(req.params.id);
   if (!category) return errorResponse(res, 404, "Category not found");

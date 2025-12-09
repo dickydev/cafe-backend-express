@@ -1,108 +1,120 @@
-const { Product, Category } = require('../models');
-const { successResponse, errorResponse, paginatedResponse } = require('../utils/responseHandler');
-const { getPagination } = require('../utils/helpers');
-const { deleteFile } = require('../middlewares/uploadMiddleware');
+const { Product, Category } = require("../models");
+const { asyncHandler } = require("../middlewares/errorHandler");
+const {
+  successResponse,
+  errorResponse,
+  paginatedResponse,
+} = require("../utils/responseHandler");
+const { Op } = require("sequelize");
+const { deleteFile } = require("../middlewares/uploadMiddleware");
 
-const getAllProducts = async (req, res, next) => {
-  try {
-    const { page = 1, size = 10, category_id, is_available, is_featured, search, min_price, max_price } = req.query;
-    const { limit, offset } = getPagination(page, size);
-    
-    const where = {};
-    if (category_id) where.category_id = category_id;
-    if (is_available !== undefined) where.is_available = is_available;
-    if (is_featured !== undefined) where.is_featured = is_featured;
-    if (search) {
-      where[require('sequelize').Op.or] = [
-        { name: { [require('sequelize').Op.iLike]: `%${search}%` } },
-        { description: { [require('sequelize').Op.iLike]: `%${search}%` } }
-      ];
-    }
-    if (min_price) where.price = { [require('sequelize').Op.gte]: min_price };
-    if (max_price) where.price = { ...where.price, [require('sequelize').Op.lte]: max_price };
-    
-    const { count, rows } = await Product.findAndCountAll({
-      where,
-      limit,
-      offset,
-      include: [{ model: Category, as: 'category', attributes: ['id', 'name', 'color', 'icon'] }],
-      order: [['created_at', 'DESC']]
-    });
-    
-    return paginatedResponse(res, 200, 'Products retrieved', rows, { page: parseInt(page), limit, totalItems: count });
-  } catch (error) {
-    next(error);
+exports.getAllProducts = asyncHandler(async (req, res) => {
+  const {
+    page = 1,
+    size = 10,
+    category_id,
+    is_available,
+    is_featured,
+    search,
+    min_price,
+    max_price,
+  } = req.query;
+
+  const where = {};
+
+  if (category_id) where.category_id = category_id;
+  if (is_available !== undefined) where.is_available = is_available;
+  if (is_featured !== undefined) where.is_featured = is_featured;
+
+  if (search) {
+    where[Op.or] = [
+      { name: { [Op.iLike]: `%${search}%` } },
+      { description: { [Op.iLike]: `%${search}%` } },
+    ];
   }
-};
 
-const getProductById = async (req, res, next) => {
-  try {
-    const product = await Product.findByPk(req.params.id, {
-      include: [{ model: Category, as: 'category' }]
-    });
-    if (!product) {
-      return errorResponse(res, 404, 'Product not found');
-    }
-    return successResponse(res, 200, 'Product retrieved', product);
-  } catch (error) {
-    next(error);
+  if (min_price) where.price = { [Op.gte]: min_price };
+  if (max_price) where.price = { ...(where.price || {}), [Op.lte]: max_price };
+
+  const limit = parseInt(size);
+  const offset = (parseInt(page) - 1) * limit;
+
+  const { count, rows } = await Product.findAndCountAll({
+    where,
+    limit,
+    offset,
+    include: [{ model: Category, as: "category", attributes: ["id", "name"] }],
+    order: [["createdAt", "DESC"]],
+  });
+
+  return paginatedResponse(res, 200, "Products retrieved", rows, {
+    page: parseInt(page),
+    limit,
+    totalItems: count,
+  });
+});
+
+exports.getProductById = asyncHandler(async (req, res) => {
+  const product = await Product.findByPk(req.params.id, {
+    include: [{ model: Category, as: "category" }],
+  });
+
+  if (!product) return errorResponse(res, 404, "Product not found");
+
+  return successResponse(res, 200, "Product retrieved", product);
+});
+
+exports.createProduct = asyncHandler(async (req, res) => {
+  const data = { ...req.body };
+
+  if (req.file) {
+    data.image_url = `/uploads/${req.file.filename}`;
   }
-};
 
-const createProduct = async (req, res, next) => {
-  try {
-    const productData = { ...req.body };
-    if (req.file) {
-      productData.image = `/uploads/${req.file.filename}`;
-    }
-    const product = await Product.create(productData);
-    const fullProduct = await Product.findByPk(product.id, {
-      include: [{ model: Category, as: 'category' }]
-    });
-    return successResponse(res, 201, 'Product created', fullProduct);
-  } catch (error) {
+  const product = await Product.create(data);
+
+  const fullProduct = await Product.findByPk(product.id, {
+    include: [{ model: Category, as: "category" }],
+  });
+
+  return successResponse(res, 201, "Product created", fullProduct);
+});
+
+exports.updateProduct = asyncHandler(async (req, res) => {
+  const product = await Product.findByPk(req.params.id);
+  if (!product) {
     if (req.file) deleteFile(req.file.path);
-    next(error);
+    return errorResponse(res, 404, "Product not found");
   }
-};
 
-const updateProduct = async (req, res, next) => {
-  try {
-    const product = await Product.findByPk(req.params.id);
-    if (!product) {
-      if (req.file) deleteFile(req.file.path);
-      return errorResponse(res, 404, 'Product not found');
+  const updateData = { ...req.body };
+
+  if (req.file) {
+    if (product.image_url) {
+      deleteFile(`uploads/${product.image_url.split("/").pop()}`);
     }
-    
-    const updateData = { ...req.body };
-    if (req.file) {
-      if (product.image) deleteFile(`uploads/${product.image.split('/').pop()}`);
-      updateData.image = `/uploads/${req.file.filename}`;
-    }
-    
-    await product.update(updateData);
-    const updatedProduct = await Product.findByPk(product.id, {
-      include: [{ model: Category, as: 'category' }]
-    });
-    return successResponse(res, 200, 'Product updated', updatedProduct);
-  } catch (error) {
-    if (req.file) deleteFile(req.file.path);
-    next(error);
+    updateData.image_url = `/uploads/${req.file.filename}`;
   }
-};
 
-const deleteProduct = async (req, res, next) => {
-  try {
-    const product = await Product.findByPk(req.params.id);
-    if (!product) {
-      return errorResponse(res, 404, 'Product not found');
-    }
-    if (product.image) deleteFile(`uploads/${product.image.split('/').pop()}`);
-    await product.destroy();
-    return successResponse(res, 200, 'Product deleted');
-  } catch (error) {
-    next(error);
+  await product.update(updateData);
+
+  const updatedProduct = await Product.findByPk(product.id, {
+    include: [{ model: Category, as: "category" }],
+  });
+
+  return successResponse(res, 200, "Product updated", updatedProduct);
+});
+
+exports.deleteProduct = asyncHandler(async (req, res) => {
+  const product = await Product.findByPk(req.params.id);
+
+  if (!product) return errorResponse(res, 404, "Product not found");
+
+  if (product.image_url) {
+    deleteFile(`uploads/${product.image_url.split("/").pop()}`);
   }
-};
 
-module.exports = { getAllProducts, getProductById, createProduct, updateProduct, deleteProduct };
+  await product.destroy();
+
+  return successResponse(res, 200, "Product deleted");
+});
