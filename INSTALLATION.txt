@@ -1,0 +1,97 @@
+========================================
+CAFE LAB BACKEND - INSTALLATION GUIDE
+========================================
+
+LANGKAH INSTALASI:
+
+1. INSTALL DEPENDENCIES
+   $ cd cafe-lab-backend
+   $ npm install
+
+2. SETUP DATABASE POSTGRESQL
+   $ psql -U postgres
+   CREATE DATABASE cafe_lab_db;
+   \q
+
+3. CONFIGURE ENVIRONMENT
+   $ cp .env.example .env
+   # Edit .env dan isi:
+   - DB_PASSWORD dengan password PostgreSQL Anda
+   - JWT_SECRET dengan random string
+   - JWT_REFRESH_SECRET dengan random string lain
+
+4. RUN DATABASE MIGRATION
+   $ npm run migrate
+
+5. SEED SAMPLE DATA (OPTIONAL)
+   $ npm run seed
+
+6. START SERVER
+   Development: $ npm run dev
+   Production: $ npm start
+
+7. TEST API
+   Server running at: http://localhost:5000
+   Health check: http://localhost:5000/health
+
+========================================
+TEST ACCOUNTS (after seeding):
+========================================
+Admin:
+- Email: admin@cafelab.com
+- Password: password123
+
+Staff:
+- Email: staff@cafelab.com  
+- Password: password123
+
+Customer:
+- Email: customer@example.com
+- Password: password123
+
+========================================
+API DOCUMENTATION:
+========================================
+Base URL: http://localhost:5000/api/v1
+
+Auth Endpoints:
+- POST /auth/register
+- POST /auth/login
+- GET /auth/profile (requires token)
+
+Product Endpoints:
+- GET /products
+- GET /products/:id
+- POST /products (admin only)
+
+Order Endpoints:
+- POST /orders
+- GET /orders (requires token)
+- GET /orders/:id
+
+Cart Endpoints:
+- GET /cart
+- POST /cart
+- PUT /cart/:item_id
+- DELETE /cart/:item_id
+
+Reservation Endpoints:
+- GET /reservations/available-tables
+- POST /reservations
+- GET /reservations
+
+Review Endpoints:
+- POST /reviews (requires token)
+- GET /reviews/product/:product_id
+
+========================================
+NOTES:
+========================================
+- Pastikan PostgreSQL running
+- Port 5000 harus available
+- Node.js v14+ required
+- Gunakan Postman untuk testing API
+
+Untuk dokumentasi lengkap, baca README.md
+
+Happy Coding! ☕

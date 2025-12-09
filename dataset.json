@@ -1,0 +1,365 @@
+{
+  "users": [
+    {
+      "email": "admin@resto.com",
+      "password": "pass123",
+      "full_name": "Admin Resto",
+      "phone": "081200000001",
+      "role": "admin",
+      "is_verified": true
+    },
+    {
+      "email": "staff1@resto.com",
+      "password": "pass123",
+      "full_name": "Budi Staff",
+      "phone": "081200000002",
+      "role": "staff",
+      "is_verified": true
+    },
+    {
+      "email": "staff2@resto.com",
+      "password": "pass123",
+      "full_name": "Siti Staff",
+      "phone": "081200000003",
+      "role": "staff",
+      "is_verified": true
+    },
+
+    {
+      "email": "user1@mail.com",
+      "password": "pass123",
+      "full_name": "Dicky Fernando",
+      "phone": "081200000004",
+      "role": "customer",
+      "is_verified": true
+    },
+    {
+      "email": "user2@mail.com",
+      "password": "pass123",
+      "full_name": "Andi Pratama",
+      "phone": "081200000005",
+      "role": "customer",
+      "is_verified": true
+    },
+    {
+      "email": "user3@mail.com",
+      "password": "pass123",
+      "full_name": "Rizky Saputra",
+      "phone": "081200000006",
+      "role": "customer",
+      "is_verified": true
+    },
+    {
+      "email": "user4@mail.com",
+      "password": "pass123",
+      "full_name": "Fajar Hidayat",
+      "phone": "081200000007",
+      "role": "customer",
+      "is_verified": true
+    },
+    {
+      "email": "user5@mail.com",
+      "password": "pass123",
+      "full_name": "Aulia Rahma",
+      "phone": "081200000008",
+      "role": "customer",
+      "is_verified": true
+    },
+    {
+      "email": "user6@mail.com",
+      "password": "pass123",
+      "full_name": "Nina Anjani",
+      "phone": "081200000009",
+      "role": "customer",
+      "is_verified": true
+    },
+    {
+      "email": "user7@mail.com",
+      "password": "pass123",
+      "full_name": "Bagas Aldi",
+      "phone": "081200000010",
+      "role": "customer",
+      "is_verified": true
+    },
+    {
+      "email": "user8@mail.com",
+      "password": "pass123",
+      "full_name": "Maya Putri",
+      "phone": "081200000011",
+      "role": "customer",
+      "is_verified": true
+    },
+    {
+      "email": "user9@mail.com",
+      "password": "pass123",
+      "full_name": "Kevin Hartono",
+      "phone": "081200000012",
+      "role": "customer",
+      "is_verified": true
+    },
+    {
+      "email": "user10@mail.com",
+      "password": "pass123",
+      "full_name": "Leo Prasetyo",
+      "phone": "081200000013",
+      "role": "customer",
+      "is_verified": true
+    },
+    {
+      "email": "user11@mail.com",
+      "password": "pass123",
+      "full_name": "Dina Ayu",
+      "phone": "081200000014",
+      "role": "customer",
+      "is_verified": true
+    },
+    {
+      "email": "user12@mail.com",
+      "password": "pass123",
+      "full_name": "M. Randy",
+      "phone": "081200000015",
+      "role": "customer",
+      "is_verified": true
+    },
+    {
+      "email": "user13@mail.com",
+      "password": "pass123",
+      "full_name": "Tono Wijaya",
+      "phone": "081200000016",
+      "role": "customer",
+      "is_verified": true
+    },
+    {
+      "email": "user14@mail.com",
+      "password": "pass123",
+      "full_name": "Joko Susanto",
+      "phone": "081200000017",
+      "role": "customer",
+      "is_verified": true
+    },
+    {
+      "email": "user15@mail.com",
+      "password": "pass123",
+      "full_name": "Bayu Ananda",
+      "phone": "081200000018",
+      "role": "customer",
+      "is_verified": true
+    },
+    {
+      "email": "user16@mail.com",
+      "password": "pass123",
+      "full_name": "Kartika Dewi",
+      "phone": "081200000019",
+      "role": "customer",
+      "is_verified": true
+    },
+    {
+      "email": "user17@mail.com",
+      "password": "pass123",
+      "full_name": "Hendra Gunawan",
+      "phone": "081200000020",
+      "role": "customer",
+      "is_verified": true
+    }
+  ],
+
+  "categories": [
+    {
+      "name": "Makanan",
+      "description": "Menu makanan utama",
+      "display_order": 1
+    },
+    {
+      "name": "Minuman",
+      "description": "Aneka minuman segar",
+      "display_order": 2
+    },
+    { "name": "Dessert", "description": "Menu penutup", "display_order": 3 },
+    { "name": "Snack", "description": "Aneka cemilan", "display_order": 4 },
+    { "name": "Coffee", "description": "Menu kopi", "display_order": 5 },
+    { "name": "Juice", "description": "Minuman jus buah", "display_order": 6 },
+    { "name": "Breakfast", "description": "Menu sarapan", "display_order": 7 },
+    { "name": "Lunch", "description": "Menu makan siang", "display_order": 8 },
+    { "name": "Dinner", "description": "Menu makan malam", "display_order": 9 },
+    {
+      "name": "Special",
+      "description": "Menu spesial resto",
+      "display_order": 10
+    }
+  ],
+
+  "products": [
+    {
+      "category_id": 1,
+      "name": "Nasi Goreng Spesial",
+      "price": 25000,
+      "stock_quantity": 30
+    },
+    {
+      "category_id": 1,
+      "name": "Ayam Geprek",
+      "price": 20000,
+      "stock_quantity": 25
+    },
+    {
+      "category_id": 1,
+      "name": "Sate Ayam",
+      "price": 30000,
+      "stock_quantity": 40
+    },
+    {
+      "category_id": 1,
+      "name": "Mie Ayam Komplit",
+      "price": 18000,
+      "stock_quantity": 50
+    },
+
+    {
+      "category_id": 2,
+      "name": "Es Teh Manis",
+      "price": 8000,
+      "stock_quantity": 100
+    },
+    {
+      "category_id": 2,
+      "name": "Lemon Tea",
+      "price": 10000,
+      "stock_quantity": 80
+    },
+    {
+      "category_id": 2,
+      "name": "Milkshake Coklat",
+      "price": 15000,
+      "stock_quantity": 50
+    },
+    {
+      "category_id": 2,
+      "name": "Es Jeruk",
+      "price": 12000,
+      "stock_quantity": 70
+    },
+
+    {
+      "category_id": 3,
+      "name": "Pudding Cokelat",
+      "price": 10000,
+      "stock_quantity": 40
+    },
+    {
+      "category_id": 3,
+      "name": "Brownies Lumer",
+      "price": 15000,
+      "stock_quantity": 30
+    },
+    {
+      "category_id": 3,
+      "name": "Cheesecake Slice",
+      "price": 20000,
+      "stock_quantity": 20
+    },
+
+    {
+      "category_id": 4,
+      "name": "Kentang Goreng",
+      "price": 12000,
+      "stock_quantity": 60
+    },
+    {
+      "category_id": 4,
+      "name": "Roti Bakar Coklat",
+      "price": 15000,
+      "stock_quantity": 30
+    },
+
+    {
+      "category_id": 5,
+      "name": "Americano",
+      "price": 18000,
+      "stock_quantity": 50
+    },
+    {
+      "category_id": 5,
+      "name": "Cappuccino",
+      "price": 22000,
+      "stock_quantity": 40
+    },
+    { "category_id": 5, "name": "Latte", "price": 23000, "stock_quantity": 40 },
+
+    {
+      "category_id": 6,
+      "name": "Jus Alpukat",
+      "price": 15000,
+      "stock_quantity": 50
+    },
+    {
+      "category_id": 6,
+      "name": "Jus Mangga",
+      "price": 13000,
+      "stock_quantity": 45
+    },
+    {
+      "category_id": 6,
+      "name": "Jus Jambu",
+      "price": 12000,
+      "stock_quantity": 50
+    },
+
+    {
+      "category_id": 7,
+      "name": "Roti Telur",
+      "price": 12000,
+      "stock_quantity": 20
+    },
+    {
+      "category_id": 7,
+      "name": "Pancake Maple",
+      "price": 20000,
+      "stock_quantity": 20
+    },
+
+    {
+      "category_id": 8,
+      "name": "Ayam Penyet",
+      "price": 25000,
+      "stock_quantity": 30
+    },
+    {
+      "category_id": 8,
+      "name": "Ikan Goreng",
+      "price": 28000,
+      "stock_quantity": 25
+    },
+
+    {
+      "category_id": 9,
+      "name": "Steak Daging",
+      "price": 65000,
+      "stock_quantity": 10
+    },
+    {
+      "category_id": 9,
+      "name": "Spaghetti Bolognese",
+      "price": 30000,
+      "stock_quantity": 25
+    },
+
+    {
+      "category_id": 10,
+      "name": "Nasi Uduk Spesial",
+      "price": 22000,
+      "stock_quantity": 30
+    },
+    {
+      "category_id": 10,
+      "name": "Sop Buntut",
+      "price": 55000,
+      "stock_quantity": 15
+    },
+    {
+      "category_id": 10,
+      "name": "Kari Ayam",
+      "price": 28000,
+      "stock_quantity": 20
+    }
+  ]
+}
