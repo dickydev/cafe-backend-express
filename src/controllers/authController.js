@@ -1,106 +1,92 @@
-const { User } = require('../models');
-const { successResponse, errorResponse } = require('../utils/responseHandler');
-const { generateToken, generateRefreshToken, verifyRefreshToken } = require('../utils/helpers');
-const logger = require('../utils/logger');
+const { User } = require("../models");
+const { successResponse, errorResponse } = require("../utils/responseHandler");
+const { asyncHandler } = require("../middlewares/errorHandler");
+const logger = require("../utils/logger");
+const bcrypt = require("bcrypt");
 
-const register = async (req, res, next) => {
-  try {
-    const { username, email, password, full_name, phone, role } = req.body;
-    const existingUser = await User.findOne({
-      where: { [require('sequelize').Op.or]: [{ email }, { username }] }
-    });
-    if (existingUser) {
-      return errorResponse(res, 400, 'User already exists');
-    }
-    const user = await User.create({ username, email, password, full_name, phone, role: role || 'waiter' });
-    const token = generateToken({ id: user.id, role: user.role });
-    const refreshToken = generateRefreshToken({ id: user.id });
-    logger.info(`New user registered: ${user.email}`);
-    return successResponse(res, 201, 'User registered successfully', { user, token, refreshToken });
-  } catch (error) {
-    next(error);
-  }
-};
+exports.register = asyncHandler(async (req, res) => {
+  const { username, email, password, full_name, phone, role } = req.body;
 
-const login = async (req, res, next) => {
-  try {
-    const { email, password } = req.body;
-    const user = await User.findOne({ where: { email } });
-    if (!user || !user.is_active) {
-      return errorResponse(res, 401, 'Invalid credentials');
-    }
-    const isPasswordValid = await user.comparePassword(password);
-    if (!isPasswordValid) {
-      return errorResponse(res, 401, 'Invalid credentials');
-    }
-    await user.update({ last_login: new Date() });
-    const token = generateToken({ id: user.id, role: user.role });
-    const refreshToken = generateRefreshToken({ id: user.id });
-    logger.info(`User logged in: ${user.email}`);
-    return successResponse(res, 200, 'Login successful', { user, token, refreshToken });
-  } catch (error) {
-    next(error);
-  }
-};
+  const exists = await User.findOne({ where: { email } });
+  if (exists) return errorResponse(res, 400, "User already exists");
 
-const getMe = async (req, res, next) => {
-  try {
-    return successResponse(res, 200, 'User profile retrieved', req.user);
-  } catch (error) {
-    next(error);
-  }
-};
+  const user = await User.create({
+    username,
+    email,
+    password,
+    full_name,
+    phone,
+    role: role || "waiter",
+  });
 
-const updateMe = async (req, res, next) => {
-  try {
-    const { full_name, phone, avatar } = req.body;
-    await req.user.update({ full_name, phone, avatar });
-    return successResponse(res, 200, 'Profile updated', req.user);
-  } catch (error) {
-    next(error);
-  }
-};
+  logger.info(`New user registered: ${user.email}`);
 
-const changePassword = async (req, res, next) => {
-  try {
-    const { currentPassword, newPassword } = req.body;
-    const isValid = await req.user.comparePassword(currentPassword);
-    if (!isValid) {
-      return errorResponse(res, 401, 'Current password is incorrect');
-    }
-    await req.user.update({ password: newPassword });
-    return successResponse(res, 200, 'Password changed successfully');
-  } catch (error) {
-    next(error);
-  }
-};
+  return successResponse(res, 201, "User registered successfully", {
+    id: user.id,
+    username: user.username,
+    email: user.email,
+    role: user.role,
+  });
+});
 
-const refreshToken = async (req, res, next) => {
-  try {
-    const { refreshToken } = req.body;
-    if (!refreshToken) {
-      return errorResponse(res, 400, 'Refresh token required');
-    }
-    const decoded = verifyRefreshToken(refreshToken);
-    const user = await User.findByPk(decoded.id);
-    if (!user || !user.is_active) {
-      return errorResponse(res, 401, 'Invalid refresh token');
-    }
-    const newToken = generateToken({ id: user.id, role: user.role });
-    const newRefreshToken = generateRefreshToken({ id: user.id });
-    return successResponse(res, 200, 'Token refreshed', { token: newToken, refreshToken: newRefreshToken });
-  } catch (error) {
-    return errorResponse(res, 401, 'Invalid refresh token');
-  }
-};
+exports.login = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
 
-const logout = async (req, res, next) => {
-  try {
-    logger.info(`User logged out: ${req.user.email}`);
-    return successResponse(res, 200, 'Logged out successfully');
-  } catch (error) {
-    next(error);
-  }
-};
+  const user = await User.findOne({ where: { email } });
+  if (!user || !user.is_active)
+    return errorResponse(res, 401, "Invalid credentials");
 
-module.exports = { register, login, getMe, updateMe, changePassword, refreshToken, logout };
+  const match = await bcrypt.compare(password, user.password);
+  if (!match) return errorResponse(res, 401, "Invalid credentials");
+
+  // Set session
+  req.session.userId = user.id;
+
+  logger.info(`User logged in: ${user.email}`);
+
+  return successResponse(res, 200, "Login successful", {
+    user: {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      role: user.role,
+    },
+    sessionId: req.sessionID,
+  });
+});
+
+exports.getMe = asyncHandler(async (req, res) => {
+  const user = await User.findByPk(req.session.userId, {
+    attributes: ["id", "username", "email", "full_name", "phone", "role"],
+  });
+
+  return successResponse(res, 200, "User profile retrieved", user);
+});
+
+exports.updateMe = asyncHandler(async (req, res) => {
+  const { full_name, phone, avatar } = req.body;
+
+  const user = await User.findByPk(req.session.userId);
+  await user.update({ full_name, phone, avatar });
+
+  return successResponse(res, 200, "Profile updated", user);
+});
+
+exports.changePassword = asyncHandler(async (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+
+  const user = await User.findByPk(req.session.userId);
+
+  const match = await bcrypt.compare(currentPassword, user.password);
+  if (!match) return errorResponse(res, 401, "Wrong current password");
+
+  await user.update({ password: newPassword });
+
+  return successResponse(res, 200, "Password changed successfully");
+});
+
+exports.logout = asyncHandler(async (req, res) => {
+  req.session.destroy();
+
+  return successResponse(res, 200, "Logged out successfully");
+});
