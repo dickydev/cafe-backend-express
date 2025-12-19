@@ -2,18 +2,12 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 
-// ===============================
-// ENSURE UPLOAD FOLDER EXISTS
-// ===============================
 const uploadDir = path.join(process.cwd(), "uploads");
 
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 
-// ===============================
-// MULTER STORAGE CONFIG
-// ===============================
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, uploadDir);
@@ -25,9 +19,6 @@ const storage = multer.diskStorage({
   },
 });
 
-// ===============================
-// FILE FILTER (IMAGE ONLY)
-// ===============================
 const fileFilter = (req, file, cb) => {
   const allowedTypes = /jpeg|jpg|png|webp/;
   const mimeType = allowedTypes.test(file.mimetype);
@@ -42,9 +33,6 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-// ===============================
-// MULTER INSTANCE
-// ===============================
 const upload = multer({
   storage,
   fileFilter,
@@ -53,9 +41,6 @@ const upload = multer({
   },
 });
 
-// ===============================
-// SINGLE FILE UPLOAD
-// ===============================
 const uploadSingle = (fieldName) => (req, res, next) => {
   const uploader = upload.single(fieldName);
 
@@ -78,9 +63,6 @@ const uploadSingle = (fieldName) => (req, res, next) => {
   });
 };
 
-// ===============================
-// DELETE FILE HELPER
-// ===============================
 const deleteFile = (filePath) => {
   const fullPath = path.join(process.cwd(), filePath);
 

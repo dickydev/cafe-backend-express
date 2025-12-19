@@ -13,12 +13,10 @@ const seedAdmin = async () => {
       return;
     }
 
-    // ⛔ JANGAN HASH PASSWORD DI SINI
-    // Biarkan User.beforeCreate yang hash
     const admin = await User.create({
       username: "admin",
       email: adminEmail,
-      password: "password123", // plaintext (AMAN)
+      password: "password123",
       full_name: "Admin Cafe Lab",
       phone: "081234567890",
       role: "admin",
