@@ -1,7 +1,7 @@
 const express = require("express");
 const { body } = require("express-validator");
-const validate = require("../middlewares/validator");
-const { authenticate } = require("../middlewares/authMiddleware");
+const validate = require("../middlewares/validate.js");
+const { authenticate } = require("../middlewares/auth.js");
 const {
   register,
   login,
@@ -34,8 +34,8 @@ const changePasswordValidation = [
 ];
 
 // ROUTES
-router.post("/register", registerValidation, validate, register);
-router.post("/login", loginValidation, validate, login);
+router.post("/register", registerValidation, register);
+router.post("/login", loginValidation, login);
 router.get("/me", authenticate, getMe);
 router.put("/me", authenticate, updateProfileValidation, validate, updateMe);
 router.put(

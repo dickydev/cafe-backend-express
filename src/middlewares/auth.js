@@ -1,23 +1,20 @@
 const { User } = require("../models");
 const { errorResponse } = require("../utils/responseHandler");
 
-// AUTH USING SESSION
 exports.authenticate = async (req, res, next) => {
-  if (!req.session.userId) {
+  if (!req.session || !req.session.userId) {
     return errorResponse(res, 401, "Not authenticated");
   }
 
   const user = await User.findByPk(req.session.userId);
-
   if (!user || !user.is_active) {
-    return errorResponse(res, 403, "Account inactive or not found");
+    return errorResponse(res, 403, "Account inactive");
   }
 
   req.user = user;
   next();
 };
 
-// ROLE CHECK
 exports.authorize = (...roles) => {
   return (req, res, next) => {
     if (!req.user) {

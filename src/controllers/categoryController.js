@@ -1,5 +1,5 @@
 const { Category, Product } = require("../models");
-const { asyncHandler } = require("../middleware/errorHandler.js");
+const { asyncHandler } = require("../middlewares/errorHandler.js");
 const {
   successResponse,
   errorResponse,

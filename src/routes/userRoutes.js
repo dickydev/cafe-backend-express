@@ -1,7 +1,7 @@
 const express = require("express");
 const { body } = require("express-validator");
-const validate = require("../middlewares/validator");
-const { authenticate, authorize } = require("../middlewares/authMiddleware");
+const validate = require("../middlewares/validate");
+const { authenticate, authorize } = require("../middlewares/auth");
 const {
   getAllUsers,
   getUserById,
@@ -22,7 +22,7 @@ const userValidation = [
 
 router.get("/", getAllUsers);
 router.get("/:id", getUserById);
-router.post("/", userValidation, validate, createUser);
+router.post("/", userValidation, createUser);
 router.put("/:id", userValidation, validate, updateUser);
 router.delete("/:id", deleteUser);
 

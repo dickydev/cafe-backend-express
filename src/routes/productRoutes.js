@@ -1,7 +1,7 @@
 const express = require("express");
 const { body } = require("express-validator");
-const validate = require("../middlewares/validator");
-const { authenticate, authorize } = require("../middlewares/authMiddleware");
+const validate = require("../middlewares/validate");
+const { authenticate, authorize } = require("../middlewares/auth");
 const { uploadSingle } = require("../middlewares/uploadMiddleware");
 const {
   getAllProducts,
