@@ -13,7 +13,13 @@ const session = require("./config/session");
 const app = express();
 
 app.use(helmet());
-app.use(cors(config.cors));
+app.use(
+  cors({
+    origin: config.cors.origin,
+    credentials: true,
+    methods: config.cors.methods,
+  })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(compression());

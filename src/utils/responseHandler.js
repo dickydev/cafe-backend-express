@@ -1,6 +1,3 @@
-/**
- * Standard Success Response
- */
 const successResponse = (
   res,
   statusCode = 200,
@@ -14,9 +11,6 @@ const successResponse = (
   });
 };
 
-/**
- * Standard Error Response
- */
 const errorResponse = (
   res,
   statusCode = 500,
@@ -30,9 +24,6 @@ const errorResponse = (
   });
 };
 
-/**
- * Paginated Response
- */
 const paginatedResponse = (
   res,
   statusCode = 200,
